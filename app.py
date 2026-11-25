@@ -4,55 +4,41 @@ import streamlit as st
 # Zoologist front
 """
 
-st.markdown(
-    """
-Remember that there are several ways to output content into your web page...
+# st.markdown(
+#     """
+# Remember that there are several ways to output content into your web page...
 
-Either like the title above by just creating a string (or an f-string) starting. Or like this paragraph using the `st.` function.
-"""
-)
-
+# Either like the title above by just creating a string (or an f-string) starting. Or like this paragraph using the `st.` function.
 # """
-# ## Here we would like to add some controllers in order to ask the user to input the characteristics of the penguin. We need to know all the inputs required by our model to make a prediction.
+# )
 
-# 1. Let's ask for:
-# - island (the location where the penguin lives: Biscoe, Dream or Torgersen)
-# - bill length (in mm)
-# - bill depth (in mm)
-# - flipper length (in mm)
-# - body mass (in g)
-# - sex ("Male" or "Female")
-# """
 island = st.text_input('Island (the location where the penguin lives: Biscoe, Dream or Torgersen)', key=20)
 
 # st.write('The current movie title is', title)
 
-bill_length = st.number_input('Bill length (in mm)', key=1)
+# bill_length_mm = st.number_input('Bill length (in mm)', key=1)
+bill_length_mm= st.slider('Bill length (in mm)', 1, 100, 3)
+bill_depth_mm = st.number_input('Bill depth (in mm)', key=2)
+flipper_length_mm = st.number_input('Flipper length (in mm)', key=4)
+body_mass_g = st.number_input('Body mass (in g)', key=5)
+# sex = st.text_input('sex ("Male" or "Female")', key=30)
+sex = st.selectbox('sex', ['Male','Female'])
 
-bill_depth = st.number_input('Bill depth (in mm)', key=2)
-bill_length = st.number_input('Bill length (in mm)', key=3)
-flipper_length = st.number_input('Flipper length (in mm)', key=4)
-body_mass = st.number_input('Body mass (in g)', key=5)
 
-sex = st.text_input('sex ("Male" or "Female")', key=30)
+url = "http://localhost:8899/predict"
 
-"""
-## Once we have these, let's call our API in order to retrieve a prediction
+if st.button("Predict") :
+    API_params = dict(
+                island=island,
+                bill_length_mm=bill_length_mm,
+                bill_depth_mm=bill_depth_mm,
+                flipper_length_mm=flipper_length_mm,
+                body_mass_g=body_mass_g,
+                sex=sex
+        )
 
-See ? No need to load a `model.joblib` file in this app, we do not even need to know anything about Data Science in order to retrieve a prediction...
+    import requests
+    response = requests.get(url, params=API_params, timeout=10)
+    result = response.json()
 
-🤔 How could we call our API ? Of course... The `requests` package 💡
-
-What are the steps to follow in order to call an API ?
-
-1. Which url will you use? Save it in a variable so you can easily change it later...
-
-2. Let's build a dictionary containing the parameters for our API...
-
-3. Let's call our API using the `requests` package...
-
-4. Let's retrieve the prediction from the **JSON** returned by the API...
-
-## Finally, we can display the prediction to the user
-"""
-url =
+    st.write(result["prediction"])
