@@ -15,7 +15,8 @@ flipper_length_mm = st.slider('Flipper length (in mm)', 1, 300, 3)
 body_mass_g = st.slider('Body mass (in g)', 1, 3000, 3)
 sex = st.selectbox('Sex', ['Male','Female'])
 
-url = "http://localhost:8899/predict"
+# url = "http://localhost:8000"
+url= st.secrets['API_URL']
 
 if st.button("Predict") :
     API_params = dict(
@@ -28,7 +29,7 @@ if st.button("Predict") :
         )
 
     import requests
-    response = requests.get(url, params=API_params, timeout=10)
+    response = requests.get(url+"/predict", params=API_params, timeout=10)
     result = response.json()
 
-    st.write(f"The puiguin specie is {result["prediction"]}")
+    st.write(f"The piguin specie is {result["prediction"]}")
